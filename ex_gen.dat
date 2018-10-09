@@ -1,0 +1,75 @@
+  Gen file created by means of gmsh and gmsh2cb
+        -999
+      36      50       2       0       2     185       0       0       0
+   99999       1       0       2       1       6       1       0
+       3       1
+       1       0       0       0       0       0
+       0       0       1       1      -1       0       0       0
+       0       0       0       0       0       0
+ 0.10000E+01 0.10000E+01 0.00000E+00 0.20000E+02 0.00000E+00
+ 0.00000E+00 0.00000E+00 0.00000E+00 0.00000E+00 0.00000E+00 0.000000E+00
+       1      50      25       1       0       0       0
+ 0.10000E-03 0.10000E+01 0.10000E-03 0.10000E+07 0.00000E+00
+
+      -1
+ 0.00000E+00 -.98060E+01 0.00000E+00 0.00000E+00 0.00000E+00 0.10000E+01       0
+ 0.00000E+00 0.10000E-11 0.10000E+01 0.10000E+01 0.10000E+02 0.10000E+01
+*      1
+ matfrag_h=0.001.dam
+*      2
+ mat2.dam
+      -1
+       1                                                            !.. ux=0_uy=0.MBC
+X-dir_Force-Stress  0.0000E+00 Dfx_(ramp_loading) 0.0000E+00
+Y-dir_Force-Stress  0.0000E+00 Dfy_(ramp_loading) 0.0000E+00
+X-Displ_rate        0.0000E+00 void               0.0000E+00
+Y-Displ_rate        0.0000E+00 void               0.0000E+00
+X_dir_prescribed    1.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+Y_dir_prescribed    1.0000E+00 void               0.0000E+00
+Multiplier          0.1000E+21 Index              1.0000E+00
+       2                                                            !.. ux=0.MBC
+X-dir_Force-Stress  0.0000E+00 Dfx_(ramp_loading) 0.0000E+00
+Y-dir_Force-Stress  0.0000E+00 Dfy_(ramp_loading) 0.0000E+00
+X-Displ_rate        0.0000E+00 void               0.0000E+00
+Y-Displ_rate        0.0000E+00 void               0.0000E+00
+X_dir_prescribed    1.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+Y_dir_prescribed    1.0000E+00 void               0.0000E+00
+Multiplier          0.1000E+21 Index              1.0000E+00
+       3                                                            !.. fy=-5.MBC
+X-dir_Force-Stress  0.0000E+00 Dfx_(ramp_loading) 0.0000E+00
+Y-dir_Force-Stress  0.0000E+00 Dfy_(ramp_loading) 0.0000E+00
+X-Displ_rate        0.0000E+00 void               0.0000E+00
+Y-Displ_rate        0.0000E+00 void               0.0000E+00
+X_dir_prescribed    1.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+void                0.0000E+00 void               0.0000E+00
+Y_dir_prescribed    1.0000E+00 void               0.0000E+00
+Multiplier          0.1000E+21 Index              1.0000E+00
+      -1
+       1                                                            !.. suction.FBC
+-humidity(Kg-Kg)    0.0000E+00 void               0.0000E+00
+-gas_flow(Kg-s)     0.0000E+00 void               0.0000E+00
+-gas_pressure(MPa)  0.0000E+00 DPress.gas(MPa)    0.0000E+00
+-gas_gamma          0.0000E+00 void               0.0000E+00
+-gas_beta           0.0000E+00 void               0.0000E+00
+-gas_density(Kg-m3) 0.0000E+00 void               0.0000E+00
+-salt_conc.(Kg-Kg)  0.0000E+00 void               0.0000E+00
+-air_conc.(Kg-Kg)   0.0000E+00 void               0.0000E+00
+-liq_flow(Kg-s)     0.0000E+00 void               0.0000E+00
+-liq_pres(MPa)      0.0000E+00 DPress.liq.(MPa)   0.0000E+00
+-liq_gamma          0.0000E+00 void               0.0000E+00
+-liq_beta           0.0000E+00 void               0.0000E+00
+-liq_density(Kg-m3) 0.0000E+00 void               0.0000E+00
+-heat_flow(J-s)     0.0000E+00 void               0.0000E+00
+-temperature(C)     0.0000E+00 DTemp.(C)          0.0000E+00
+-heat_gamma(J-s-C)  0.0000E+00 void               0.0000E+00
+-decay_heat(1-s)    0.0000E+00 void               0.0000E+00
+-tot.vol.flow(m3-s) 0.0000E+00 void               0.0000E+00
+-smoothing_param.   0.0000E+00 void               0.0000E+00
+-index              0.1000E+01 void               0.0000E+00
+      -1
+      -1

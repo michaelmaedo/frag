@@ -1,0 +1,37 @@
+   21 Damage_model_param.   65
+ E_(MPa)                17E+03 alphabiot                 0.0
+ nu                        0.2 visco                     0.0
+ ft_(MPa)                 1.25 r-r0_ratio                1.0
+ H_(m^-1)                  0.0 iflag_tension             1.0
+ q                      17E+03 Gf_(MN-m)             120E-06
+   22 Crack_properties       2
+ t_mech             0.0000E+00 c_perm             0.0000E+00
+ normal_x           0.0000E+00 n_perm             0.0000E+00
+ normal_y           0.0000E+00 t_hydro_max        0.0000E+00
+ normal_z           0.0000E+00 ks0_(m2)              2.0e-16
+ fcrack_0           0.0000E+00 ks_max_(m2)           1.0e-05
+   33 Time_Step_Control      1
+ f_tol                 1.0E-04 void               0.0000E+00
+ dtime_max_(s)            0.01 void               0.0000E+00
+ void               0.0000E+00 void               0.0000E+00
+ void               0.0000E+00 void               0.0000E+00
+ void               0.0000E+00 void               0.0000E+00
+   35 Shear_Strengths        1
+ tau_s_(MPa)           4.0E-04 void               0.0000E+00
+ tau_l_(MPa)           4.0E-04 void               0.0000E+00
+ frict_s            0.0000E+00 void               0.0000E+00
+ frict_l            0.0000E+00 void               0.0000E+00
+ void               0.0000E+00 void               0.0000E+00
+   36 Stress_directions      1
+ n(1)                      0.0 s(3)                      0.0
+ n(2)                      0.0 l(1)                      0.0
+ n(3)                      1.0 l(2)                      1.0
+ s(1)                      1.0 l(3)                      0.0
+ s(2)                      0.0 void               0.0000E+00
+   10 Solid_Phase_Prop.      3
+ Cs_(J-kg-K)              1000 dCs-dt                   1.38
+ rhos0_(kg-m3)            2770 betas_(MPa^-1)            0.0
+ alphas_(oC^-1)        7.8E-06 p0_(MPa)                  0.1
+ T0_(oC)                    40 BodyForce_0               0.0
+ alphabiot                0.75 BodyForce_f               0.0
+   -1

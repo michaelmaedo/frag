@@ -1,0 +1,8 @@
+  
+ Error in subroutine open_file_cb:
+ File name:   ex_gri.dat
+ File unit:              2
+ File status: old
+ Code_Bright could not open file with status OLD.
+ Stop.
+  
