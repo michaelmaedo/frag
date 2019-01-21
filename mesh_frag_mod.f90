@@ -163,6 +163,7 @@ contains
         real(kind(1.0D+00)) :: x( mnnel ), y( mnnel )
         integer :: lnodface( nnodeface ), neighbor_nodes( nnodeface ) 
 
+        new_nmat = nmat + 1
         new_nelem = nelem
         nnel = 3
         do ii = 1, nelfrag
@@ -202,7 +203,10 @@ contains
                     new_connec( nnodeface + 1, new_nelem ) = neighbor_nodes( 2 )
 
                     new_elset( new_nelem ) = nmat + 1
-                    if ( el < 0 ) new_elset( new_nelem ) = nmat + 2
+                    if ( el < 0 ) then
+                        new_nmat = nmat + 2
+                        new_elset( new_nelem ) = new_nmat
+                    end if
 
                     new_nelem = new_nelem + 1
                     new_connec( 1 : nnodeface, new_nelem ) = neighbor_nodes( 1 : nnodeface )
@@ -253,4 +257,24 @@ contains
 
     end function norm
 
+
+    function dist2points( nnode, no1, no2, coord ) result ( dist )
+        implicit none
+        integer, intent(in) :: nnode, no1, no2
+        real(kind(1.0d+00)), intent(in) :: coord(3,nnode)
+        real(kind(1.0d+00)) :: dist
+        
+        real(kind(1.0d+00)) :: x1, x2, y1, y2
+
+        x1 = coord(1,no1)
+        y1 = coord(2,no1)
+
+        x2 = coord(1,no2)
+        y2 = coord(2,no2)
+
+        dist = sqrt( (y2 - y1)**2 + (x2 - x1)**2 )
+        
+        return
+    end function dist2points
+    
 end module mesh_frag_mod

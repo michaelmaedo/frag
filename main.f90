@@ -5,9 +5,11 @@ program main
     
     implicit none
     
-    integer :: nnode, nelem, ndime, nnel, nmat, &
+    integer :: nnode, nelem, ndime, nnel, &
+               nmat, frac, interf, fixbc, &
                new_nnode, new_nelem, new_nmat, &
-               ino, iel, jno, new_ino, nbarnods, &
+               old_nelem, &
+               ino, iel, jno, new_ino, nbarnods, lty, &
                ii, jj, kk
                
     integer, allocatable :: connec(:,:), &
@@ -21,7 +23,7 @@ program main
                             lnods(:), &
                             new_nods_position(:)
 
-    real(kind(1.0D+00)) :: thick
+    real(kind(1.0D+00)) :: thick, dist
     integer :: node, fragmat, nelfrag, nfacel, nnodeface, no_bar
     character(len = 500) str
     
@@ -47,8 +49,8 @@ program main
     
     write(*,*) "Reading control parameters "
     read(inpf,*) nnode, nelem, ndime
-    read(inpf,*) nmat, fragmat, thick
-    read(inpf,*) no_bar
+    read(inpf,*) nmat, fragmat, frac, interf, thick
+    read(inpf,*) no_bar, fixbc
     
     allocate(coord(3,nnode))
     allocate(elset(nelem))
@@ -196,10 +198,54 @@ program main
             new_nelem = new_nelem + 1
             new_connec(1,new_nelem) = bar_nodes( ino )
             new_connec(2,new_nelem) = ino
-            new_connec(3,new_nelem) = bar_nodes( ino )
+            new_connec(3,new_nelem) = ZERO
             new_eltype(new_nelem) = 8
+            new_elset(new_nelem) = new_nmat + 1
+
         end do
 
+!=====================================================================
+!   Insert continuum elements in the holes
+!=====================================================================
+    else if (no_bar == 2) then
+
+        write(*,*) "Inserting three-node triangular elements in the holes"
+        old_nelem = new_nelem
+        do iel = nelem + 1, old_nelem
+
+            if (new_elset(iel) == frac .or. &
+                new_elset(iel) == interf ) then
+
+                lnods(1:nnel) = new_connec(1:nnel,iel)
+                lnods(nnel+1) = new_connec(1,iel)
+ 
+                do ino = 1, nnel
+
+                    ii = lnods(ino)
+                    jj = lnods(ino+1)
+
+                    dist = dist2points( new_nnode, ii, jj, &
+                        new_coord(1,1) )
+
+                    if (dist < 2*thick) then
+                       exit
+                    end if
+                    
+                end do
+
+                new_nelem = new_nelem + 1
+
+                new_elset(new_nelem) = new_nmat + 1
+                new_eltype(new_nelem) = 1
+
+                new_connec(1,new_nelem) = ii
+                new_connec(2,new_nelem) = jj
+                new_connec(3,new_nelem) = bar_nodes( ii )
+                                
+            end if
+            
+        end do
+        
     else
 
         allocate( new_nods_position(new_nnode) )
@@ -264,7 +310,7 @@ program main
         write(*,*) "Correcting boundary of the bar element"
         do ino = 1, nnode
             if (bar_bc(ino) /= -1) then
-                bcond(1,ino) = 5
+                new_bcond(1,ino) = fixbc
             end if
         end do
     end if
@@ -282,7 +328,7 @@ program main
     write(*,'(A)') " Write fragmented mesh to the output file"
     write(*,'(A)') " ----------------------------------------"
 
-100 format("(i10,", i3,"(' ',e20.13),2i10)")
+100 format("(i10,", i3,"(' ',e19.12),2i10)")
     write(str,100) ndime 
     write(grif,*) new_nnode, new_nelem
     do ino = 1, new_nnode
@@ -292,10 +338,10 @@ program main
     end do
 
 200 format("(3i10,", i3,"i10)")
-    write(str,200) nnel 
+    write(str,200) nnel+4
     do iel = 1, new_nelem
-        write(grif,str) iel, new_elset(iel), 1, &
-            (new_connec(ino,iel), ino = 1, nnel)
+        write(grif,str) iel, new_elset(iel), new_eltype(iel), &
+            (new_connec(ino,iel), ino = 1, nnel),0,0,0,0
     end do
     
     
@@ -324,10 +370,16 @@ program main
 520 format('<DataArray type="Int64"       Name="connectivity" format="ascii">')
     write(outf,520)
     do iel = 1, new_nelem
+
         do ino = 1, nnel
             lnods(ino) = new_connec(ino,iel) - 1
+
+            nnel = 3
+            if (new_eltype(iel) == 8) nnel = 2
+
         end do
-        write(outf,"(3i10)") (lnods(jj), jj = 1, 3)
+        write(outf,"(3i10)") (lnods(jj), jj = 1, nnel)
+
     end do
     write(outf,530)
 530 format('</DataArray>')
@@ -336,21 +388,39 @@ program main
     write(outf,540)
     kk = 0
     do iel = 1, new_nelem
+
+        nnel = 3
+        if (new_eltype(iel) == 8) nnel = 2
+
         kk = kk + nnel
         write(outf,*) kk
+
     end do
     write(outf,530)
     
 550 format('<DataArray type="Int64"            Name="types" format="ascii">')
     write(outf,550)
     do iel = 1, new_nelem
-        write(outf,'(i5)') 5
+        if (new_eltype(iel) == 1) then
+            lty = 5
+        else
+            lty = 3 
+        end if
+        write(outf,'(i5)') lty 
     end do
     write(outf,530)
 
-    
     write(outf,560)
 560 format('</Cells>',/&
+        '<CellData>',/&
+        '<DataArray type="Int64" Name="Material" format="ascii">')
+    do iel = 1, new_nelem
+        write(outf,'(i5)') new_elset(iel)
+    end do
+    write(outf,530)
+    
+    write(outf,570)
+570 format('</CellData>',/&
         '</Piece>',/&
         '</UnstructuredGrid>',/&
         '</VTKFile>')

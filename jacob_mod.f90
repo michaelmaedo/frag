@@ -8,18 +8,23 @@ module jacob_mod
 contains
 
     subroutine check_jacob( ndim, numel, coord, eltype, connec )
-        integer, intent(in) :: ndim, numel
+        integer, intent(in) :: ndim
         integer, intent(in), allocatable :: eltype(:)
+        integer, intent(inout) :: numel
         integer, intent(inout), allocatable :: connec(:,:)
         real(DOUBLE), allocatable, intent(in) :: coord(:,:)
 
-        integer :: iel, inode
-        integer :: nnel, nnodside
+        integer :: iel, iel_new, inode
+        integer :: nnel, old_numel, nnodside
+        integer :: zero_area_iel
         integer :: lnod(20)
-        real(DOUBLE) :: vol
+        real(double) :: vol
 
-        do iel = 1, numel
+        zero_area_iel = 0
+        old_numel = numel
+        do iel = 1, old_numel
             
+            iel_new = iel - zero_area_iel
             lnod(:) = 0
             vol = ZERO
 
@@ -64,11 +69,16 @@ contains
                 ! vol = vol_3d( nnel, coord, connec, lnod )                
                 
             end if
-
-            if ( vol < 1e-30 ) then      
+                
+            ! write(*,*) vol
+            connec(1:nnel,iel_new) = lnod(1:nnel)
+            if ( vol < -1.0e-30 ) then
                 do inode = 1, nnel
-                    connec(inode,iel) = lnod(nnel-(inode-1))
+                    connec(inode,iel_new) = lnod(nnel-(inode-1))
                 end do
+            else if ( vol < 1.0e-20 ) then
+                zero_area_iel = zero_area_iel + 1
+                numel = numel - 1
             end if
             
         end do
