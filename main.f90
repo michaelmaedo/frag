@@ -241,7 +241,9 @@ program main
                 new_connec(1,new_nelem) = ii
                 new_connec(2,new_nelem) = jj
                 new_connec(3,new_nelem) = bar_nodes( ii )
-                                
+                if (bar_nodes( ii ) == 0) &
+                    new_connec(3,new_nelem) = bar_nodes( jj )
+                
             end if
             
         end do
