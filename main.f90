@@ -74,7 +74,7 @@ program main
     write(*,*) "Reading connectivity list "
     nnel = 3
     do iel = 1, nelem
-        read(inpf,'(6i10)') ii, elset(iel), eltype(iel), &
+        read(inpf,*) ii, elset(iel), eltype(iel), &
             (connec(jj,iel), jj = 1, nnel)
     end do
     close(inpf)
